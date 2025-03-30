@@ -23,16 +23,16 @@ class SimpleDisplay {
     void navigateDown();
 
   private:
-    Adafruit_ST7735& tft;      // TFT display reference
-    MenuItem* menuItems;      // Array of MenuItem objects
-    int menuItemCount;        // Total number of menu items
-    int selectedIndex;        // Index of the selected menu item
-    int displayWindowIndex;   // Index of the first menu item to display
+    Adafruit_ST7735& tft;
+    MenuItem* menuItems;
+    int menuItemCount;
+    int selectedIndex;
+    int displayWindowIndex;
     uint16_t textColor;
     uint16_t textBackground;
     uint16_t selectedTextColor;
     uint16_t selectedTextBackground;
-    const int WINDOW_SIZE = 5; // Number of menu items to display at once
+    const int WINDOW_SIZE = 5;
     unsigned long lastScrollTime;
     int scrollOffset;
     bool scrolling;

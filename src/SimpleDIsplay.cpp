@@ -17,20 +17,19 @@ SimpleDisplay::SimpleDisplay(Adafruit_ST7735& tft, MenuItem menuItems[], int men
 
 void SimpleDisplay::renderTextWithScroll(int i) {
   String text = menuItems[i].label;
-  // Get the bounding box of the text
   int16_t x, y;
   uint16_t textWidth, textHeight;
-  tft.getTextBounds(text, 10, 40 + selectedIndex * 24, &x, &y, &textWidth, &textHeight); // Get text width and height
+  tft.getTextBounds(text, 10, 40 + selectedIndex * 24, &x, &y, &textWidth, &textHeight);
 
-  int displayWidth = 128;  // Adjust based on your screen width
+  int displayWidth = 128;
   
   if (textWidth > displayWidth) {
     if (!scrolling) {
       scrolling = true;
-      lastScrollTime = millis();  // Start the scroll when the item is selected
+      lastScrollTime = millis(); 
     }
     unsigned long currentTime = millis();
-    if (currentTime - lastScrollTime > 1) {  // Delay for smooth scrolling (adjust speed)
+    if (currentTime - lastScrollTime > 1) {
       lastScrollTime = currentTime;
       scrollOffset--;
       if (scrollOffset < -textWidth) {
@@ -40,7 +39,7 @@ void SimpleDisplay::renderTextWithScroll(int i) {
       tft.print(text);
     }
   } else {
-    tft.print(text);  // No scroll needed
+    tft.print(text);
   }
 }
 
@@ -51,13 +50,13 @@ void SimpleDisplay::renderText() {
   tft.setTextWrap(false);
 
   for (int i = displayWindowIndex; i < displayWindowIndex + WINDOW_SIZE; i++) {
-    if (i >= menuItemCount) break;  // Don't render beyond the array length
+    if (i >= menuItemCount) break;
     
     tft.setCursor(10, startY + ctr * 24); // 24 pixels = 16px for text height + 8px for spacing
     if (ctr == selectedIndex) {
       tft.setTextColor(selectedTextColor);
       tft.fillRect(10, startY + ctr * 24, 118, 16, selectedTextBackground);
-      renderTextWithScroll(i);  // Render the selected item with scrolling effect
+      renderTextWithScroll(i);
     } else {
       tft.setTextColor(textColor);
       tft.fillRect(10, startY + ctr * 24, 118, 16, textBackground);

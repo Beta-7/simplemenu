@@ -1,4 +1,3 @@
-// MenuItem.h
 #ifndef MENUITEM_H
 #define MENUITEM_H
 
@@ -6,9 +5,8 @@
 
 class MenuItem {
   public:
-    String label; // The label of the menu item
+    String label;
 
-    // Constructor to initialize label
     MenuItem(String label);
 };
 

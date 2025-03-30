@@ -1,5 +1,5 @@
-#include <Adafruit_GFX.h>    // Core graphics library
-#include <Adafruit_ST7735.h> // Hardware-specific library for ST7735
+#include <Adafruit_GFX.h>
+#include <Adafruit_ST7735.h>
 #include <SPI.h>
 #include "MenuItem.h"
 #include "SimpleDisplay.h"
@@ -16,7 +16,6 @@
 #define BUTTON_LEFT 14
 #define BUTTON_UP 27
 
-// Array of MenuItem objects instead of Strings
 MenuItem menuItems[] = {
     MenuItem("Welcome"),
     MenuItem("Display Test"),
