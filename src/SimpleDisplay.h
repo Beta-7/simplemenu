@@ -14,6 +14,7 @@ class SimpleDisplay {
     void renderText();
     void renderTextWithScroll(int i);
     void handleButtonPresses();
+    void renderTick();
     int clampIndex(int index);
 
     // Navigation functions
@@ -33,6 +34,7 @@ class SimpleDisplay {
     uint16_t selectedTextColor;
     uint16_t selectedTextBackground;
     const int WINDOW_SIZE = 5;
+    const int ITEM_OFFSET = 10;
     unsigned long lastScrollTime;
     int scrollOffset;
     bool scrolling;

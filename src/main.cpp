@@ -31,13 +31,14 @@ SimpleDisplay simpleDisplay(tft, menuItems, sizeof(menuItems) / sizeof(menuItems
 
 void setup(void) {
   Serial.begin(115200);
-
+  
   pinMode(BUTTON_RIGHT, INPUT_PULLUP);
   pinMode(BUTTON_DOWN, INPUT_PULLUP);
   pinMode(BUTTON_LEFT, INPUT_PULLUP);
   pinMode(BUTTON_UP, INPUT_PULLUP);
-
+  
   tft.initR(INITR_BLACKTAB);
+  tft.fillScreen(ST7735_BLACK);
   tft.setRotation(2);
 
   Serial.println(F("Initialized"));
@@ -60,6 +61,6 @@ void loop() {
     simpleDisplay.navigateRight();
   }
 
-  simpleDisplay.renderText();
+  simpleDisplay.renderTick();
   delay(100);
 }

@@ -4,8 +4,9 @@
 #include <Adafruit_ST7735.h>
 #include <SPI.h>
 
-SimpleDisplay::SimpleDisplay(Adafruit_ST7735& tft, MenuItem menuItems[], int menuItemCount)
-  : tft(tft), menuItems(menuItems), menuItemCount(menuItemCount), selectedIndex(0), displayWindowIndex(0) {
+SimpleDisplay::SimpleDisplay(Adafruit_ST7735 &tft, MenuItem menuItems[], int menuItemCount)
+    : tft(tft), menuItems(menuItems), menuItemCount(menuItemCount), selectedIndex(0), displayWindowIndex(0)
+{
   textColor = ST7735_WHITE;
   textBackground = ST7735_BLACK;
   selectedTextColor = ST7735_BLACK;
@@ -15,55 +16,77 @@ SimpleDisplay::SimpleDisplay(Adafruit_ST7735& tft, MenuItem menuItems[], int men
   scrolling = false;
 }
 
-void SimpleDisplay::renderTextWithScroll(int i) {
+void SimpleDisplay::renderTextWithScroll(int i)
+{
   String text = menuItems[i].label;
   int16_t x, y;
   uint16_t textWidth, textHeight;
-  tft.getTextBounds(text, 10, 40 + selectedIndex * 24, &x, &y, &textWidth, &textHeight);
-
-  int displayWidth = 128;
+  tft.getTextBounds(text, ITEM_OFFSET, 40 + selectedIndex * 24, &x, &y, &textWidth, &textHeight);
   
-  if (textWidth > displayWidth) {
-    if (!scrolling) {
+  int displayWidth = 118;
+
+  if (textWidth <= displayWidth)
+  {
+    return;
+  }
+  else
+  {
+    tft.fillRect(ITEM_OFFSET, 40 + selectedIndex * 24, 118, 16, selectedTextBackground);
+    if (!scrolling)
+    {
       scrolling = true;
-      lastScrollTime = millis(); 
+      lastScrollTime = millis();
     }
     unsigned long currentTime = millis();
-    if (currentTime - lastScrollTime > 1) {
+    if (currentTime - lastScrollTime > 50)
+    {
       lastScrollTime = currentTime;
-      scrollOffset--;
-      if (scrollOffset < -textWidth) {
+      scrollOffset -= 10;
+      if (scrollOffset < -textWidth)
+      {
         scrollOffset = displayWidth;
       }
-      tft.setCursor(10 + scrollOffset, 40 + selectedIndex * 24);
+      tft.setCursor(ITEM_OFFSET + scrollOffset, 40 + selectedIndex * 24);
+      tft.setTextColor(selectedTextColor);
+
       tft.print(text);
     }
-  } else {
-    tft.print(text);
   }
 }
 
-void SimpleDisplay::renderText() {
+void SimpleDisplay::renderText()
+{
   int startY = 40;
   int ctr = 0;
   tft.setTextSize(2);
   tft.setTextWrap(false);
 
-  for (int i = displayWindowIndex; i < displayWindowIndex + WINDOW_SIZE; i++) {
-    if (i >= menuItemCount) break;
-    
-    tft.setCursor(10, startY + ctr * 24); // 24 pixels = 16px for text height + 8px for spacing
-    if (ctr == selectedIndex) {
+  for (int i = displayWindowIndex; i < displayWindowIndex + WINDOW_SIZE; i++)
+  {
+    if (i >= menuItemCount)
+      break;
+
+    tft.setCursor(ITEM_OFFSET+1, startY + ctr * 24); // 24 pixels = 16px for text height + 8px for spacing
+    if (ctr == selectedIndex)
+    {
       tft.setTextColor(selectedTextColor);
-      tft.fillRect(10, startY + ctr * 24, 118, 16, selectedTextBackground);
-      renderTextWithScroll(i);
-    } else {
+      tft.fillRect(ITEM_OFFSET, startY + ctr * 24, 118, 16, selectedTextBackground);
+      tft.print(menuItems[i].label);
+    }
+    else
+    {
       tft.setTextColor(textColor);
-      tft.fillRect(10, startY + ctr * 24, 118, 16, textBackground);
+      tft.fillRect(ITEM_OFFSET, startY + ctr * 24, 118, 16, textBackground);
       tft.print(menuItems[i].label);
     }
     ctr++;
   }
+  scrollOffset = 0;
+}
+
+void SimpleDisplay::renderTick()
+{
+  renderTextWithScroll(selectedIndex + displayWindowIndex);
 }
 
 void SimpleDisplay::navigateRight()
