@@ -16,18 +16,18 @@
 #define BUTTON_LEFT 14
 #define BUTTON_UP 27
 
-MenuItem menuItems[] = {
-    MenuItem("Welcome"),
-    MenuItem("Display Test"),
-    MenuItem("Readable"),
-    MenuItem("Adafruit ST7735"),
-    MenuItem("1234567890987654321"),
-    MenuItem("Offscreen option"),
-    MenuItem("Offscreen option #2")
-};
+MenuItem mainMenu("Main Menu", {
+  MenuItem("Welcome"),
+  MenuItem("Display"),
+  MenuItem("Readable"),
+  MenuItem("Adafruit ST7735"),
+  MenuItem("1234567890987654321"),
+  MenuItem("Offscreen option"),
+  MenuItem("Offscreen option #2")
+});
 
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
-SimpleDisplay simpleDisplay(tft, menuItems, sizeof(menuItems) / sizeof(menuItems[0]));
+SimpleDisplay simpleDisplay(tft, mainMenu);
 
 void setup(void) {
   Serial.begin(115200);

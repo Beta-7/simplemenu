@@ -9,13 +9,12 @@
 
 class SimpleDisplay {
   public:
-    SimpleDisplay(Adafruit_ST7735& tft, MenuItem menuItems[], int menuItemCount);
+  SimpleDisplay(Adafruit_ST7735& tft, MenuItem rootItem);
     
     void renderText();
     void renderTextWithScroll(int i);
     void handleButtonPresses();
     void renderTick();
-    int clampIndex(int index);
 
     // Navigation functions
     void navigateLeft();
@@ -25,8 +24,8 @@ class SimpleDisplay {
 
   private:
     Adafruit_ST7735& tft;
-    MenuItem* menuItems;
-    int menuItemCount;
+    MenuItem rootItem;
+    std::vector<bool> dirty;
     int selectedIndex;
     int displayWindowIndex;
     uint16_t textColor;
@@ -38,6 +37,11 @@ class SimpleDisplay {
     unsigned long lastScrollTime;
     int scrollOffset;
     bool scrolling;
+
+    int handleWindow(int index);
+    int clampIndex(int index, int change);
+    void renderTextRow(int y, String text, uint16_t textColor, uint16_t textBackground);
+
 };
 
 #endif
