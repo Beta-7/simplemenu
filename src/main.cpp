@@ -16,9 +16,28 @@
 #define BUTTON_LEFT 14
 #define BUTTON_UP 27
 
+
+void doSomething(){
+  Serial.print("You have selected deeper!");
+
+}
+
 MenuItem mainMenu("Main Menu", {
-  MenuItem("Welcome"),
-  MenuItem("Display"),
+  MenuItem("FirstMenu", {
+    MenuItem("Submenu #1", {
+      MenuItem("Deeper", doSomething)
+    }),
+    MenuItem("Submenu #2"),
+    MenuItem("Submenu #3"),
+    MenuItem("Submenu #4"),
+  }),
+  MenuItem("SecondMenu", {
+    MenuItem("Second Submenu"),
+    MenuItem("Second Submenu #2"),
+    MenuItem("Second Submenu #3"),
+    MenuItem("Second Submenu #4"),
+
+  }),
   MenuItem("Readable"),
   MenuItem("Adafruit ST7735"),
   MenuItem("1234567890987654321"),

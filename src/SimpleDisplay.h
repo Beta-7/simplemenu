@@ -24,17 +24,20 @@ class SimpleDisplay {
 
   private:
     Adafruit_ST7735& tft;
-    MenuItem rootItem;
+    MenuItem menu;
+    MenuItem *shownMenu;
     std::vector<bool> dirty;
-    int selectedIndex;
-    int displayWindowIndex;
+    std::vector<MenuItem*> menuPath;
     uint16_t textColor;
     uint16_t textBackground;
     uint16_t selectedTextColor;
     uint16_t selectedTextBackground;
     const int WINDOW_SIZE = 5;
     const int ITEM_OFFSET = 10;
+    const int DISPLAY_WIDTH = 118;  
     unsigned long lastScrollTime;
+    int selectedIndex;
+    int displayWindowIndex;
     int scrollOffset;
     bool scrolling;
 
