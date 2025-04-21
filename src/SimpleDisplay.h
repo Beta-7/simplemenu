@@ -39,7 +39,8 @@ class SimpleDisplay {
     int displayWindowIndex;
     int scrollOffset;
     bool scrolling;
-
+    bool cleanEverything;
+    bool displayMode;
     int handleWindow(int index);
     int clampIndex(int index, int change);
     void renderTextRow(int y, String text, uint16_t textColor, uint16_t textBackground);

@@ -20,6 +20,9 @@ SimpleDisplay::SimpleDisplay(Adafruit_ST7735 &tft, MenuItem menu)
 
 void SimpleDisplay::renderTextWithScroll(int i)
 {
+  if(displayMode){
+    return;
+  }
   String text = (*shownMenu).subMenuItems[i].label;
   int16_t x, y;
   uint16_t textWidth, textHeight;
@@ -52,8 +55,14 @@ void SimpleDisplay::renderTextWithScroll(int i)
 
 void SimpleDisplay::renderText()
 {
+  if(displayMode){
+    return;
+  }
   tft.setTextWrap(false);
-
+  if(cleanEverything){
+    tft.fillScreen(ST7735_BLACK);
+    cleanEverything = false;
+  }
   // Breadcrumb
   tft.setTextSize(1);
   tft.fillRect(0, 0, DISPLAY_WIDTH, 16, textBackground);
@@ -67,7 +76,7 @@ void SimpleDisplay::renderText()
 
   // Title
   tft.setTextSize(2);
-  tft.fillRect(0, 16, DISPLAY_WIDTH, 20, textBackground);
+  tft.fillRect(0, 16, 150, 20, textBackground);
   tft.setCursor(ITEM_OFFSET, 18);
   tft.setTextColor(textColor);
   tft.print(shownMenu->label);
@@ -134,7 +143,10 @@ void SimpleDisplay::navigateRight()
   } else if (selectedItem.onSelect) {
     Serial.print("navigateRight: Triggering action for ");
     Serial.println(selectedItem.label);
-    selectedItem.onSelect();
+    selectedItem.onSelect(tft);
+    menuPath.push_back(shownMenu);
+    displayMode = true;
+    cleanEverything = true;
   } else {
     Serial.println("navigateRight: No submenu or action");
   }
@@ -142,6 +154,7 @@ void SimpleDisplay::navigateRight()
 
 void SimpleDisplay::navigateLeft()
 {
+  displayMode = false;
   if (menuPath.size() > 1)
   {
     menuPath.pop_back();

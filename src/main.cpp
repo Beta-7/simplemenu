@@ -17,32 +17,56 @@
 #define BUTTON_UP 27
 
 
-void doSomething(){
-  Serial.print("You have selected deeper!");
+void doSomething(Adafruit_ST7735& tft) {
+  tft.fillScreen(ST7735_BLACK);
+  tft.setTextColor(ST7735_WHITE);
+  tft.setTextSize(2);
+  tft.setCursor(10, 40);
+  tft.println("Temperature:");
+  tft.setCursor(10, 60);
+  tft.println("0C");
 
+  Serial.println("You have selected deeper!");
 }
 
-MenuItem mainMenu("Main Menu", {
-  MenuItem("FirstMenu", {
-    MenuItem("Submenu #1", {
-      MenuItem("Deeper", doSomething)
+void showSuccessScreen(Adafruit_ST7735& tft) {
+  tft.fillScreen(ST7735_BLACK);
+
+  tft.setTextWrap(false);
+  tft.setTextColor(ST7735_GREEN);
+  tft.setTextSize(4);
+  tft.setCursor(30, 30);
+  tft.println("OK"); 
+
+  tft.setTextSize(2);
+  tft.setCursor(30, 80);
+  tft.println("Success");
+}
+
+
+MenuItem mainMenu("Smart Home", {
+  MenuItem("Kitchen", {
+    MenuItem("Sensors", {
+      MenuItem("Temperature", doSomething)
     }),
-    MenuItem("Submenu #2"),
-    MenuItem("Submenu #3"),
+    MenuItem("Lights", {
+      MenuItem("Turn all off", showSuccessScreen)
+    }),
+    MenuItem("History"),
     MenuItem("Submenu #4"),
   }),
-  MenuItem("SecondMenu", {
-    MenuItem("Second Submenu"),
-    MenuItem("Second Submenu #2"),
-    MenuItem("Second Submenu #3"),
-    MenuItem("Second Submenu #4"),
+  MenuItem("Living room", {
+    MenuItem("TV"),
+    MenuItem("Lights"),
+    MenuItem("Scenes"),
+    MenuItem("Sensors"),
 
   }),
-  MenuItem("Readable"),
-  MenuItem("Adafruit ST7735"),
-  MenuItem("1234567890987654321"),
-  MenuItem("Offscreen option"),
-  MenuItem("Offscreen option #2")
+  MenuItem("Bedroom"),
+  MenuItem("Balcony"),
+  MenuItem("Bathroom"),
+  MenuItem("Neso drugo"),
+  MenuItem("Neso treto")
 });
 
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
