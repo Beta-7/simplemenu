@@ -26,7 +26,6 @@ class SimpleDisplay {
     Adafruit_ST7735& tft;
     MenuItem menu;
     MenuItem *shownMenu;
-    std::vector<bool> dirty;
     std::vector<MenuItem*> menuPath;
     uint16_t textColor;
     uint16_t textBackground;
@@ -44,7 +43,8 @@ class SimpleDisplay {
     int handleWindow(int index);
     int clampIndex(int index, int change);
     void renderTextRow(int y, String text, uint16_t textColor, uint16_t textBackground);
-
+    void markAllDirty();
+    void markItemDirty(int index);
 };
 
 #endif

@@ -14,7 +14,6 @@ SimpleDisplay::SimpleDisplay(Adafruit_ST7735 &tft, MenuItem menu)
   lastScrollTime = 0;
   scrollOffset = 0;
   scrolling = false;
-  dirty = std::vector<bool>(WINDOW_SIZE, true);
   shownMenu = &this->menu;
   menuPath.push_back(shownMenu);
 }
@@ -53,12 +52,11 @@ void SimpleDisplay::renderTextWithScroll(int i)
 
 void SimpleDisplay::renderText()
 {
-
   tft.setTextWrap(false);
 
+  // Breadcrumb
   tft.setTextSize(1);
   tft.fillRect(0, 0, DISPLAY_WIDTH, 16, textBackground);
-
   if (menuPath.size() > 1)
   {
     String parentLabel = "< " + menuPath[menuPath.size() - 2]->label;
@@ -67,37 +65,46 @@ void SimpleDisplay::renderText()
     tft.print(parentLabel);
   }
 
+  // Title
   tft.setTextSize(2);
   tft.fillRect(0, 16, DISPLAY_WIDTH, 20, textBackground);
   tft.setCursor(ITEM_OFFSET, 18);
   tft.setTextColor(textColor);
   tft.print(shownMenu->label);
 
-  // Separator line (optional visual divider)
+  // Divider
   tft.drawFastHLine(0, 38, DISPLAY_WIDTH, textColor);
 
+  // Items
   int startY = 40;
   int ctr = 0;
   tft.setTextSize(2);
-  tft.setTextWrap(false);
 
-  for (int i = displayWindowIndex; i < displayWindowIndex + WINDOW_SIZE; i++)
+  for (int i = 0; i < WINDOW_SIZE; i++)
   {
-    String label = i < (*shownMenu).subMenuItems.size() ? shownMenu->subMenuItems[i].label : "";
+    int menuIndex = displayWindowIndex + i;
 
-    if (!dirty[ctr])
+    bool isInBounds = menuIndex < shownMenu->subMenuItems.size();
+    MenuItem* item = isInBounds ? &shownMenu->subMenuItems[menuIndex] : nullptr;
+
+    if (item && !item->dirty)
     {
       ctr++;
       continue;
     }
 
-    tft.setCursor(ITEM_OFFSET + 1, startY + ctr * 24); // 24 pixels = 16px for text height + 8px for spacing
+    uint16_t backgroundColor = (i == selectedIndex) ? selectedTextBackground : textBackground;
+    uint16_t textColor2 = (i == selectedIndex) ? selectedTextColor : textColor;
 
-    uint16_t textColor2 = ctr == selectedIndex ? selectedTextColor : textColor;
-    uint16_t backgroundColor = ctr == selectedIndex ? selectedTextBackground : textBackground;
-    renderTextRow(startY + ctr * 24, label, textColor2, backgroundColor);
-    dirty[ctr++] = false;
+    String label = isInBounds ? item->label : "";
+
+    tft.setCursor(ITEM_OFFSET + 1, startY + i * 24);
+    renderTextRow(startY + i * 24, label, textColor2, backgroundColor);
+
+    if (item) item->dirty = false;
+    ctr++;
   }
+
   scrollOffset = 0;
 }
 
@@ -110,31 +117,25 @@ void SimpleDisplay::navigateRight()
 {
   int actualIndex = displayWindowIndex + selectedIndex;
 
-  if (actualIndex < 0 || actualIndex >= shownMenu->subMenuItems.size())
-  {
+  if (actualIndex < 0 || actualIndex >= shownMenu->subMenuItems.size()) {
     Serial.println("navigateRight: Invalid menu index");
     return;
   }
 
   MenuItem &selectedItem = shownMenu->subMenuItems[actualIndex];
 
-  if (!selectedItem.subMenuItems.empty())
-  {
+  if (!selectedItem.subMenuItems.empty()) {
     shownMenu = &selectedItem;
     menuPath.push_back(shownMenu);
     selectedIndex = 0;
     displayWindowIndex = 0;
-    dirty = std::vector<bool>(WINDOW_SIZE, true);
+    markAllDirty();
     renderText();
-  }
-  else if (selectedItem.onSelect)
-  {
+  } else if (selectedItem.onSelect) {
     Serial.print("navigateRight: Triggering action for ");
     Serial.println(selectedItem.label);
     selectedItem.onSelect();
-  }
-  else
-  {
+  } else {
     Serial.println("navigateRight: No submenu or action");
   }
 }
@@ -147,7 +148,7 @@ void SimpleDisplay::navigateLeft()
     shownMenu = menuPath.back();
     selectedIndex = 0;
     displayWindowIndex = 0;
-    dirty = std::vector<bool>(WINDOW_SIZE, true);
+    markAllDirty();
     renderText();
   }
   else
@@ -161,53 +162,41 @@ void SimpleDisplay::navigateUp()
   int newIndex = clampIndex(selectedIndex, -1);
   displayWindowIndex = handleWindow(selectedIndex - 1);
   selectedIndex = newIndex;
+  markItemDirty(selectedIndex);
   renderText();
 }
 
 void SimpleDisplay::navigateDown()
 {
-
   int newIndex = clampIndex(selectedIndex, 1);
   displayWindowIndex = handleWindow(selectedIndex + 1);
   selectedIndex = newIndex;
+  markItemDirty(selectedIndex);
   renderText();
 }
 
 int SimpleDisplay::clampIndex(int index, int change)
 {
-  if (index + change < 0)
-  {
-    dirty[index] = true;
-    dirty[0] = true;
-    return 0;
-  }
-  else if (index + change >= WINDOW_SIZE || index + change >= shownMenu->subMenuItems.size())
-  {
-    dirty[index] = true;
-    dirty[WINDOW_SIZE - 1] = true;
+  int newIndex = index + change;
+  if (newIndex < 0 || newIndex >= shownMenu->subMenuItems.size()) {
+    markItemDirty(index);
     return index;
-  }
-  else
-  {
-    dirty[index] = true;
-    dirty[index + change] = true;
-    return index + change;
+  } else {
+    markItemDirty(index);
+    markItemDirty(newIndex);
+    return newIndex;
   }
 }
 
 int SimpleDisplay::handleWindow(int index)
 {
-  if (index < 0 && displayWindowIndex != 0)
-  {
-    dirty = std::vector<bool>(WINDOW_SIZE, true);
+  if (index < 0 && displayWindowIndex != 0) {
+    markAllDirty();
     return displayWindowIndex - 1;
-  }
-  else if (index >= WINDOW_SIZE && displayWindowIndex + WINDOW_SIZE < (*shownMenu).subMenuItems.size())
-  {
-    dirty = std::vector<bool>(WINDOW_SIZE, true);
+  } else if (index >= WINDOW_SIZE && displayWindowIndex + WINDOW_SIZE < shownMenu->subMenuItems.size()) {
+    markAllDirty();
     return displayWindowIndex + 1;
   }
-
   return displayWindowIndex;
 }
 
@@ -216,4 +205,17 @@ void SimpleDisplay::renderTextRow(int y, String text, uint16_t textColor, uint16
   tft.setTextColor(textColor);
   tft.fillRect(ITEM_OFFSET, y, 118, 16, textBackground);
   tft.print(text);
+}
+
+void SimpleDisplay::markAllDirty() {
+  for (auto& item : shownMenu->subMenuItems) {
+    item.dirty = true;
+  }
+}
+
+void SimpleDisplay::markItemDirty(int relativeIndex) {
+  int actualIndex = displayWindowIndex + relativeIndex;
+  if (actualIndex >= 0 && actualIndex < shownMenu->subMenuItems.size()) {
+    shownMenu->subMenuItems[actualIndex].dirty = true;
+  }
 }

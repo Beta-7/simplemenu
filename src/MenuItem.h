@@ -9,7 +9,7 @@ class MenuItem {
     String label;
     std::vector<MenuItem> subMenuItems;
     std::function<void()> onSelect;
-
+    bool dirty = true;
     int menuItemCount;
 
     MenuItem(String label);
