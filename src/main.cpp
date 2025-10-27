@@ -3,12 +3,16 @@
 #include <SPI.h>
 #include "MenuItem.h"
 #include "SimpleDisplay.h"
+#include "HomeAssistantHelper.h"
+#include <WiFi.h>
 
 #define TFT_CS 5
 #define TFT_RST 4
 #define TFT_DC 2
 #define TFT_MOSI 21 // Data out
 #define TFT_SCLK 22 // Clock out
+
+#define DISPLAY_WIDTH = 128;
 
 // Button pins
 #define BUTTON_RIGHT 13
@@ -17,37 +21,60 @@
 #define BUTTON_UP 27
 
 
-void doSomething(Adafruit_ST7735& tft) {
+const char* homeAssistantUrl = "http://<your_home_assistant_ip>:<port>/api";
+const char* accessToken = "<your_long_lived_access_token>";
+const char* ssid = "DAVID";
+const char* password = "daviddavid2606";
+
+HomeAssistantHelper homeAssistant(homeAssistantUrl, accessToken);
+
+void showValue(Adafruit_ST7735& tft) {
   tft.fillScreen(ST7735_BLACK);
   tft.setTextColor(ST7735_WHITE);
-  tft.setTextSize(2);
-  tft.setCursor(10, 40);
+  tft.setTextSize(1);
+  int16_t x, y;
+  uint16_t labelWidth, labelHeight;
+  tft.getTextBounds("Temperature:", 0, 0, &x, &y, &labelWidth, &labelHeight);
+  int labelX = (128 - labelWidth) / 2;  
+  tft.setCursor(labelX, 40);
   tft.println("Temperature:");
-  tft.setCursor(10, 60);
-  tft.println("0C");
-
-  Serial.println("You have selected deeper!");
+  tft.setTextSize(2);
+  String temp = "25.5C";
+  tft.getTextBounds(temp, 0, 0, &x, &y, &labelWidth, &labelHeight);
+  int tempX = (128 - labelWidth) / 2;  
+  tft.setCursor(tempX, 80);
+  tft.println(temp);
 }
 
 void showSuccessScreen(Adafruit_ST7735& tft) {
   tft.fillScreen(ST7735_BLACK);
-
   tft.setTextWrap(false);
   tft.setTextColor(ST7735_GREEN);
   tft.setTextSize(4);
-  tft.setCursor(30, 30);
-  tft.println("OK"); 
+  int16_t x, y;
+  uint16_t okWidth, okHeight;
+  tft.getTextBounds("OK", 0, 0, &x, &y, &okWidth, &okHeight);
 
+  int okX = (128 - okWidth) / 2;  
+  int okY = (160 - okHeight) / 3;
+  tft.setCursor(okX, okY);
+  tft.println("OK");
   tft.setTextSize(2);
-  tft.setCursor(30, 80);
-  tft.println("Success");
+  String successText = "Success";
+
+  tft.getTextBounds(successText, 0, 0, &x, &y, &okWidth, &okHeight);
+
+  int successX = (128 - okWidth) / 2;
+  int successY = okY + okHeight + 10;
+  tft.setCursor(successX, successY);
+  tft.println(successText);
 }
 
 
 MenuItem mainMenu("Smart Home", {
   MenuItem("Kitchen", {
     MenuItem("Sensors", {
-      MenuItem("Temperature", doSomething)
+      MenuItem("Temperature", showValue)
     }),
     MenuItem("Lights", {
       MenuItem("Turn all off", showSuccessScreen)
@@ -86,6 +113,38 @@ void setup(void) {
 
   Serial.println(F("Initialized"));
 
+  Serial.print("Connecting to WiFi...");
+  
+  tft.setCursor(10, 10);
+  tft.setTextColor(ST7735_WHITE);
+  tft.setTextSize(1);
+  tft.println("Connecting to WiFi...");
+  
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+    
+    tft.setCursor(10, 30);
+    tft.setTextColor(ST7735_WHITE);
+    tft.setTextSize(1);
+    tft.print("Connecting...");
+  }
+
+  Serial.println();
+  Serial.println("Connected to WiFi");
+  Serial.print("IP address: ");
+  Serial.println(WiFi.localIP());
+
+  tft.fillRect(10, 30, 120, 20, ST7735_BLACK);
+  tft.setCursor(10, 30);
+  tft.setTextColor(ST7735_GREEN);
+  tft.setTextSize(1);
+  tft.println("Connected!");
+  delay(1000);
+
+  tft.fillScreen(ST7735_BLACK);
   simpleDisplay.renderText();
   delay(1000);
 }

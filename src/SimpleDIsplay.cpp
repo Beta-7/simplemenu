@@ -20,7 +20,8 @@ SimpleDisplay::SimpleDisplay(Adafruit_ST7735 &tft, MenuItem menu)
 
 void SimpleDisplay::renderTextWithScroll(int i)
 {
-  if(displayMode){
+  if (displayMode)
+  {
     return;
   }
   String text = (*shownMenu).subMenuItems[i].label;
@@ -55,11 +56,13 @@ void SimpleDisplay::renderTextWithScroll(int i)
 
 void SimpleDisplay::renderText()
 {
-  if(displayMode){
+  if (displayMode)
+  {
     return;
   }
   tft.setTextWrap(false);
-  if(cleanEverything){
+  if (cleanEverything)
+  {
     tft.fillScreen(ST7735_BLACK);
     cleanEverything = false;
   }
@@ -94,7 +97,7 @@ void SimpleDisplay::renderText()
     int menuIndex = displayWindowIndex + i;
 
     bool isInBounds = menuIndex < shownMenu->subMenuItems.size();
-    MenuItem* item = isInBounds ? &shownMenu->subMenuItems[menuIndex] : nullptr;
+    MenuItem *item = isInBounds ? &shownMenu->subMenuItems[menuIndex] : nullptr;
 
     if (item && !item->dirty)
     {
@@ -110,7 +113,8 @@ void SimpleDisplay::renderText()
     tft.setCursor(ITEM_OFFSET + 1, startY + i * 24);
     renderTextRow(startY + i * 24, label, textColor2, backgroundColor);
 
-    if (item) item->dirty = false;
+    if (item)
+      item->dirty = false;
     ctr++;
   }
 
@@ -124,30 +128,41 @@ void SimpleDisplay::renderTick()
 
 void SimpleDisplay::navigateRight()
 {
+  if (displayMode)
+  {
+    navigateLeft();
+    return;
+  }
   int actualIndex = displayWindowIndex + selectedIndex;
 
-  if (actualIndex < 0 || actualIndex >= shownMenu->subMenuItems.size()) {
+  if (actualIndex < 0 || actualIndex >= shownMenu->subMenuItems.size())
+  {
     Serial.println("navigateRight: Invalid menu index");
     return;
   }
 
   MenuItem &selectedItem = shownMenu->subMenuItems[actualIndex];
 
-  if (!selectedItem.subMenuItems.empty()) {
+  if (!selectedItem.subMenuItems.empty())
+  {
     shownMenu = &selectedItem;
     menuPath.push_back(shownMenu);
     selectedIndex = 0;
     displayWindowIndex = 0;
     markAllDirty();
     renderText();
-  } else if (selectedItem.onSelect) {
+  }
+  else if (selectedItem.onSelect)
+  {
     Serial.print("navigateRight: Triggering action for ");
     Serial.println(selectedItem.label);
     selectedItem.onSelect(tft);
     menuPath.push_back(shownMenu);
     displayMode = true;
     cleanEverything = true;
-  } else {
+  }
+  else
+  {
     Serial.println("navigateRight: No submenu or action");
   }
 }
@@ -172,8 +187,14 @@ void SimpleDisplay::navigateLeft()
 
 void SimpleDisplay::navigateUp()
 {
+  if (displayMode)
+  {
+    navigateLeft();
+    return;
+  }
   int newIndex = clampIndex(selectedIndex, -1);
   displayWindowIndex = handleWindow(selectedIndex - 1);
+
   selectedIndex = newIndex;
   markItemDirty(selectedIndex);
   renderText();
@@ -181,7 +202,13 @@ void SimpleDisplay::navigateUp()
 
 void SimpleDisplay::navigateDown()
 {
+  if (displayMode)
+  {
+    navigateLeft();
+    return;
+  }
   int newIndex = clampIndex(selectedIndex, 1);
+
   displayWindowIndex = handleWindow(selectedIndex + 1);
   selectedIndex = newIndex;
   markItemDirty(selectedIndex);
@@ -191,10 +218,13 @@ void SimpleDisplay::navigateDown()
 int SimpleDisplay::clampIndex(int index, int change)
 {
   int newIndex = index + change;
-  if (newIndex < 0 || newIndex >= shownMenu->subMenuItems.size()) {
+  if (newIndex < 0 || (newIndex >= shownMenu->subMenuItems.size() || newIndex >= WINDOW_SIZE))
+  {
     markItemDirty(index);
     return index;
-  } else {
+  }
+  else
+  {
     markItemDirty(index);
     markItemDirty(newIndex);
     return newIndex;
@@ -203,10 +233,13 @@ int SimpleDisplay::clampIndex(int index, int change)
 
 int SimpleDisplay::handleWindow(int index)
 {
-  if (index < 0 && displayWindowIndex != 0) {
+  if (index < 0 && displayWindowIndex != 0)
+  {
     markAllDirty();
     return displayWindowIndex - 1;
-  } else if (index >= WINDOW_SIZE && displayWindowIndex + WINDOW_SIZE < shownMenu->subMenuItems.size()) {
+  }
+  else if (index >= WINDOW_SIZE && displayWindowIndex + WINDOW_SIZE < shownMenu->subMenuItems.size())
+  {
     markAllDirty();
     return displayWindowIndex + 1;
   }
@@ -220,15 +253,19 @@ void SimpleDisplay::renderTextRow(int y, String text, uint16_t textColor, uint16
   tft.print(text);
 }
 
-void SimpleDisplay::markAllDirty() {
-  for (auto& item : shownMenu->subMenuItems) {
+void SimpleDisplay::markAllDirty()
+{
+  for (auto &item : shownMenu->subMenuItems)
+  {
     item.dirty = true;
   }
 }
 
-void SimpleDisplay::markItemDirty(int relativeIndex) {
+void SimpleDisplay::markItemDirty(int relativeIndex)
+{
   int actualIndex = displayWindowIndex + relativeIndex;
-  if (actualIndex >= 0 && actualIndex < shownMenu->subMenuItems.size()) {
+  if (actualIndex >= 0 && actualIndex < shownMenu->subMenuItems.size())
+  {
     shownMenu->subMenuItems[actualIndex].dirty = true;
   }
 }
