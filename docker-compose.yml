@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: homeassistant/home-assistant:stable
+    volumes:
+      - ./config:/config
+    environment:
+      - TZ=Europe/Skopje  # Change to your timezone
+    restart: unless-stopped
+    network_mode: host
+    ports:
+      - "8123:8123"  # Home Assistant web interface port
