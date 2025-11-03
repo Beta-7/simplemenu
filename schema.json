@@ -1,0 +1,70 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "accessToken": {
+      "type": "string",
+      "description": "JWT access token for authentication."
+    },
+    "homeAssistantUrl": {
+      "type": "string",
+      "format": "uri",
+      "description": "URL of the Home Assistant instance."
+    },
+    "ssid": {
+      "type": "string",
+      "description": "Wi-Fi SSID."
+    },
+    "password": {
+      "type": "string",
+      "description": "Wi-Fi password."
+    },
+    "mainMenu": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the main menu."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of items in the main menu.",
+          "items": { "$ref": "#/definitions/menuItem" }
+        }
+      },
+      "required": ["name", "items"],
+      "additionalProperties": false
+    }
+  },
+  "required": ["accessToken", "homeAssistantUrl", "ssid", "password", "mainMenu"],
+  "additionalProperties": false,
+  "definitions": {
+    "menuItem": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of the menu item."
+        },
+        "items": {
+          "type": "array",
+          "description": "List of submenu items or actions.",
+          "items": { "$ref": "#/definitions/menuItem" },
+          "optional": true
+        },
+        "entity": {
+          "type": "string",
+          "description": "Entity for linking (e.g., Home Assistant sensor or light).",
+          "optional": true
+        },
+        "service": {
+          "type": "string",
+          "description": "Service to call for the entity (e.g., turn off a light).",
+          "optional": true
+        }
+      },
+      "required": ["name"],
+      "additionalProperties": false
+    }
+  }
+}

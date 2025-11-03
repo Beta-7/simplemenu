@@ -1,10 +1,28 @@
 import yaml
 import subprocess
 import os
+import json
+import jsonschema
+import sys
+from jsonschema import validate
 
-def load_yaml_from_file(file_path):
-    with open(file_path, 'r') as file:
-        return yaml.safe_load(file)
+def validate_and_load_yaml_from_file(yaml_file_path):
+
+    with open("schema.json", 'r') as schema_file:
+        schema = json.load(schema_file)
+
+    with open(yaml_file_path, 'r') as yaml_file:
+        yaml_data = yaml.safe_load(yaml_file)
+
+    try:
+        validate(instance=yaml_data, schema=schema)
+        return yaml_data
+    except jsonschema.exceptions.ValidationError as err:
+        print(f"YAML validation error: {err.message}")
+        raise
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        raise
 
 def generate_config_file(file_path, menu_data):
     with open(file_path, 'r') as file:
@@ -16,6 +34,7 @@ def generate_config_file(file_path, menu_data):
 
     with open(file_path.replace(".template", ""), 'w') as file:
         file.write(config)
+    print("Generating config from YAML format...")
 
 def generate_cpp_file(file_path, menu_data):
     with open(file_path, 'r') as file:
@@ -23,6 +42,7 @@ def generate_cpp_file(file_path, menu_data):
         cpp_code = cpp_code.replace("MenuItem mainMenu;", generate_cpp_code(menu_data))
         with open(file_path.replace(".template", ""), 'w') as file:
             file.write(cpp_code)
+    print("Generating menu from YAML format...")
 
 
 def generate_cpp_code(menu_data):
@@ -37,11 +57,9 @@ def generate_cpp_code(menu_data):
         return cpp_item
 
     def generate_menu_item(item):
-        print("Decoding YAML file...")
         if 'items' in item:
             return create_menu_item(item['name'], item['items'])
         elif 'entity' in item:
-            # In case of entity-based menu items
             entity = item['entity']
             if 'service' in item:
                 service = item['service']
@@ -120,7 +138,7 @@ def main():
     config_file_path = "src/Config.h.template"
     
     try:
-        data = load_yaml_from_file(yaml_file_path)
+        data = validate_and_load_yaml_from_file(yaml_file_path)
     except Exception as e:
         print(f"Error loading YAML file: {e}")
         return
