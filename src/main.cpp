@@ -89,7 +89,21 @@ void callServiceScreen(Adafruit_ST7735 &tft, char *service, char *entity)
   tft.println(stateMessage);
 }
 
-MenuItem mainMenu;
+MenuItem mainMenu = MenuItem("Smart Home", {MenuItem("Kitchen", {MenuItem("Sensors", {MenuItem("Humidity", [](Adafruit_ST7735 &tft) { showValue(tft, "sensor.kitchen_humidity"); }),
+MenuItem("Temperature", [](Adafruit_ST7735 &tft) { showValue(tft, "sensor.kitchen_temperature"); }),}),
+MenuItem("Lights", {MenuItem("Turn all off", [](Adafruit_ST7735 &tft) { callServiceScreen(tft, "light/turn_off", "light.kitchen_light"); }),}),
+MenuItem("History"),
+MenuItem("Submenu #4"),}),
+MenuItem("Living room", {MenuItem("TV"),
+MenuItem("Lights"),
+MenuItem("Scenes"),
+MenuItem("Sensors"),}),
+MenuItem("Bedroom"),
+MenuItem("Balcony"),
+MenuItem("Bathroom"),
+MenuItem("Neso drugo"),
+MenuItem("Neso treto"),
+});
 
 Adafruit_ST7735 tft(TFT_CS, TFT_DC, TFT_MOSI, TFT_SCLK, TFT_RST);
 SimpleDisplay simpleDisplay(tft, mainMenu);

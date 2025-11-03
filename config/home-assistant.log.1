@@ -1,4 +1,6 @@
-2025-10-28 11:31:40.191 ERROR (MainThread) [homeassistant.config] Platform error: media_player - No module named 'homeassistant.components.template.media_player'
+2025-10-30 09:54:23.134 WARNING (Recorder) [homeassistant.components.recorder.util] The system could not validate that the sqlite3 database at //config/home-assistant_v2.db was shutdown cleanly
+2025-10-30 09:54:23.179 WARNING (Recorder) [homeassistant.components.recorder.util] Ended unfinished session (id=13 from 2025-10-28 10:31:40.026476)
+2025-10-30 09:54:23.216 ERROR (MainThread) [homeassistant.config] Platform error: media_player - No module named 'homeassistant.components.template.media_player'
 Traceback (most recent call last):
   File "/usr/src/homeassistant/homeassistant/config.py", line 1052, in _async_load_and_validate_platform_integration
     platform = await p_integration.integration.async_get_platform(domain)
@@ -33,3 +35,8 @@ Traceback (most recent call last):
   File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
   File "<frozen importlib._bootstrap>", line 1324, in _find_and_load_unlocked
 ModuleNotFoundError: No module named 'homeassistant.components.template.media_player'
+2025-10-30 09:59:54.212 ERROR (MainThread) [frontend.js.modern.202510014] Uncaught error from Edge 141.0.0.0 on Windows 10
+Error: Suspend promise not set
+c.suspend (node_modules/home-assistant-js-websocket/dist/connection.js:200:18)
+suspend (src/layouts/home-assistant.ts:300:26)
+_suspendApp (src/layouts/home-assistant.ts:182:51)

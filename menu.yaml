@@ -1,7 +1,7 @@
 accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ODlmN2JlZTQ2MmI0YTMzYTQxNzNhMDRiZTcxZjU3NyIsImlhdCI6MTc2MTU4NTE2OCwiZXhwIjoyMDc2OTQ1MTY4fQ.OA3ArJmx0Pdk_ba12edTlJmSF5e6Ksd6WOz-V7Mmd6U"
 homeAssistantUrl: "http://192.168.1.208:8123"
 ssid: "DAVID"
-password: "asdasdasd"
+password: "daviddavid2606"
 
 mainMenu:
   name: "Smart Home"

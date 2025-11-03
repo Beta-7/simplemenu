@@ -3,3 +3,9 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+config/*
+!config/scenes.yaml
+!config/scripts.yaml
+!config/secrets.yaml
+!config/automations.yaml
+!config/configuration.yaml

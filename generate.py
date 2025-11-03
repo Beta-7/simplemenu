@@ -23,8 +23,6 @@ def generate_cpp_file(file_path, menu_data):
             file.write(cpp_code)
 
 
-    
-
 def generate_cpp_code(menu_data):
     cpp_code = []
     
