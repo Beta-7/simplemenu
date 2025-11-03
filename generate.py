@@ -1,4 +1,6 @@
 import yaml
+import subprocess
+import os
 
 def load_yaml_from_file(file_path):
     with open(file_path, 'r') as file:
@@ -35,6 +37,7 @@ def generate_cpp_code(menu_data):
         return cpp_item
 
     def generate_menu_item(item):
+        print("Decoding YAML file...")
         if 'items' in item:
             return create_menu_item(item['name'], item['items'])
         elif 'entity' in item:
@@ -54,6 +57,63 @@ def generate_cpp_code(menu_data):
     cpp_code.append(f'MenuItem mainMenu = {convert_main_menu(menu_data["mainMenu"])};')
     return '\n'.join(cpp_code)
 
+
+def build_project():
+    try:
+        print("Building the project with PlatformIO...")
+        result = subprocess.Popen(
+            ['platformio', 'run'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        for line in result.stdout:
+            print(line, end='')
+        for line in result.stderr:
+            print(line, end='', file=sys.stderr)
+        
+        result.wait()
+        
+        if result.returncode != 0:
+            print(f"Build failed with return code {result.returncode}.")
+            return False
+        
+    except Exception as e:
+        print(f"Error during build: {e}")
+        return False
+
+    print("Build completed successfully.")
+    return True
+
+def upload_project():
+    try:
+        print("Uploading the project to ESP32...")
+        result = subprocess.Popen(
+            ['platformio', 'run', '--target', 'upload'],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
+        )
+        
+        for line in result.stdout:
+            print(line, end='')
+        for line in result.stderr:
+            print(line, end='', file=sys.stderr)
+        
+        result.wait()
+        
+        if result.returncode != 0:
+            print(f"Upload failed with return code {result.returncode}.")
+            return False
+        
+    except Exception as e:
+        print(f"Error during upload: {e}")
+        return False
+
+    print("Upload completed successfully.")
+    return True
+
 def main():
     yaml_file_path = "menu.yaml"
     cpp_file_path = "src/main.cpp.template"
@@ -68,6 +128,16 @@ def main():
     cpp_code = generate_cpp_code(data)
     generate_cpp_file(cpp_file_path, data)
     generate_config_file(config_file_path, data)
+
+    if not build_project():
+        print("Build failed. Exiting.")
+        return
+
+    if not upload_project():
+        print("Upload failed. Exiting.")
+        return
+
+    print("Build, binary move, and upload completed successfully.")
 
 if __name__ == "__main__":
     main()
