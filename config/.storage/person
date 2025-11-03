@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "minor_version": 1,
+  "key": "person",
+  "data": {
+    "items": [
+      {
+        "id": "diplomska",
+        "name": "Diplomska",
+        "user_id": "0fb2c43dbbd34f77975b47ab44f13b16",
+        "device_trackers": []
+      }
+    ]
+  }
+}

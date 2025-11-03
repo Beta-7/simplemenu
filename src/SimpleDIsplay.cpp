@@ -1,8 +1,8 @@
-// SimpleDisplay.cpp
 #include "SimpleDisplay.h"
 #include <Adafruit_GFX.h>
 #include <Adafruit_ST7735.h>
 #include <SPI.h>
+#include "Config.h"
 
 SimpleDisplay::SimpleDisplay(Adafruit_ST7735 &tft, MenuItem menu)
     : tft(tft), menu(menu)

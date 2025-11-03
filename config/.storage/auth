@@ -14,6 +14,17 @@
         "name": "Home Assistant Content",
         "system_generated": true,
         "local_only": false
+      },
+      {
+        "id": "0fb2c43dbbd34f77975b47ab44f13b16",
+        "group_ids": [
+          "system-admin"
+        ],
+        "is_owner": true,
+        "is_active": true,
+        "name": "Diplomska",
+        "system_generated": false,
+        "local_only": false
       }
     ],
     "groups": [
@@ -30,7 +41,17 @@
         "name": "Read Only"
       }
     ],
-    "credentials": [],
+    "credentials": [
+      {
+        "id": "9a54b83b159a45b4a2062a58e4ce4c9d",
+        "user_id": "0fb2c43dbbd34f77975b47ab44f13b16",
+        "auth_provider_type": "homeassistant",
+        "auth_provider_id": null,
+        "data": {
+          "username": "diplomska"
+        }
+      }
+    ],
     "refresh_tokens": [
       {
         "id": "2194364621d243449bff0e2c335f9fef",
@@ -44,6 +65,40 @@
         "token": "e3194e4785f60f94d6b1abb4ec3115b81c88abf799b24186391df9485c155d0f78e49b28dadfba775d829eae9047c6b77ea73f1f0fb2702cd5379e36d81c3725",
         "jwt_key": "e5fbe0f071ca01d30147821c700ea32657493191cac0ccd82a1b16c45e8437ee414c00e1488541824bf5869cd8457523274bd6267a04b2e170a15b8fc3423ff6",
         "last_used_at": null,
+        "last_used_ip": null,
+        "expire_at": null,
+        "credential_id": null,
+        "version": "2025.10.4"
+      },
+      {
+        "id": "33aa5d602f4348ee9b1587e7f9a1ebde",
+        "user_id": "0fb2c43dbbd34f77975b47ab44f13b16",
+        "client_id": "http://localhost:8123/",
+        "client_name": null,
+        "client_icon": null,
+        "token_type": "normal",
+        "created_at": "2025-10-27T16:26:43.680334+00:00",
+        "access_token_expiration": 1800.0,
+        "token": "dc67b970c01401001009282e9822a93ec9954d7795bb75cefe15beec05562fc8970409d31ccdd6b9e727cb78ab2f528e705aaeb9c4468350d0f73a7804a1fccd",
+        "jwt_key": "71fd3769b8346eaf77fe5007a69d6b0d86593d04a606024a818871f190e6d55d2a26cf57e87c7863b57a2325dda157565f61c7bd2929fa09889952829d610122",
+        "last_used_at": "2025-10-30T08:54:52.778799+00:00",
+        "last_used_ip": "172.19.0.1",
+        "expire_at": 1769590492.778799,
+        "credential_id": "9a54b83b159a45b4a2062a58e4ce4c9d",
+        "version": "2025.10.4"
+      },
+      {
+        "id": "889f7bee462b4a33a4173a04be71f577",
+        "user_id": "0fb2c43dbbd34f77975b47ab44f13b16",
+        "client_id": null,
+        "client_name": "diplomska",
+        "client_icon": null,
+        "token_type": "long_lived_access_token",
+        "created_at": "2025-10-27T17:12:48.792775+00:00",
+        "access_token_expiration": 315360000.0,
+        "token": "b81d39d0d421c9f79e0d84e8958dbd139c62910b82ca96bb28ed1bcb850660cf71f0fcfca706426ecde6ae7383cfa6099f7854ad49152dff95ccd37cc671c9b3",
+        "jwt_key": "72c6903af754f2ae18e439cc8d5b4e73ced00147d0570ba86cb9b90084358c5bdf705fdfc78521c916efc1ec8e936d390ea03845e3026799a2f053ff3329c598",
+        "last_used_at": "2025-10-27T17:12:48.792878+00:00",
         "last_used_ip": null,
         "expire_at": null,
         "credential_id": null,

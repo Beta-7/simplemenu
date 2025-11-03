@@ -1,7 +1,3 @@
-// SimpleDisplay.h
-#ifndef SIMPLEDISPLAY_H
-#define SIMPLEDISPLAY_H
-
 #include <Adafruit_GFX.h>
 #include <Adafruit_ST7735.h>
 #include <SPI.h>
@@ -31,9 +27,6 @@ class SimpleDisplay {
     uint16_t textBackground;
     uint16_t selectedTextColor;
     uint16_t selectedTextBackground;
-    const int WINDOW_SIZE = 5;
-    const int ITEM_OFFSET = 10;
-    const int DISPLAY_WIDTH = 118;  
     unsigned long lastScrollTime;
     int selectedIndex;
     int displayWindowIndex;
@@ -47,5 +40,3 @@ class SimpleDisplay {
     void markAllDirty();
     void markItemDirty(int index);
 };
-
-#endif

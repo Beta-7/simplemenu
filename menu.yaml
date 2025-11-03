@@ -1,0 +1,34 @@
+accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiI4ODlmN2JlZTQ2MmI0YTMzYTQxNzNhMDRiZTcxZjU3NyIsImlhdCI6MTc2MTU4NTE2OCwiZXhwIjoyMDc2OTQ1MTY4fQ.OA3ArJmx0Pdk_ba12edTlJmSF5e6Ksd6WOz-V7Mmd6U"
+homeAssistantUrl: "http://192.168.1.208:8123"
+ssid: "DAVID"
+password: "asdasdasd"
+
+mainMenu:
+  name: "Smart Home"
+  items:
+    - name: "Kitchen"
+      items:
+        - name: "Sensors"
+          items:
+            - name: "Humidity"
+              entity: "sensor.kitchen_humidity"
+            - name: "Temperature"
+              entity: "sensor.kitchen_temperature"
+        - name: "Lights"
+          items:
+            - name: "Turn all off"
+              entity: "light.kitchen_light"
+              service: "light/turn_off"
+        - name: "History"
+        - name: "Submenu #4"
+    - name: "Living room"
+      items:
+        - name: "TV"
+        - name: "Lights"
+        - name: "Scenes"
+        - name: "Sensors"
+    - name: "Bedroom"
+    - name: "Balcony"
+    - name: "Bathroom"
+    - name: "Neso drugo"
+    - name: "Neso treto"

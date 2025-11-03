@@ -9,6 +9,5 @@ services:
     environment:
       - TZ=Europe/Skopje  # Change to your timezone
     restart: unless-stopped
-    network_mode: host
     ports:
       - "8123:8123"  # Home Assistant web interface port

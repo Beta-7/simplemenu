@@ -1,6 +1,4 @@
-#ifndef MENUITEM_H
-#define MENUITEM_H
-
+#pragma once
 #include <Arduino.h>
 #include <vector>
 #include <functional>      
@@ -20,5 +18,3 @@ class MenuItem {
 
     void addSubMenu(const std::vector<MenuItem>& items);
 };
-
-#endif
